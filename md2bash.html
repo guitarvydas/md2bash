@@ -86,15 +86,17 @@ spc [c] = [[${c}]]
 <p>p2b grammar:</p>
 <textarea id="p2bgrammar" rows="10" cols="90" placeholder="code markdown grammar" style="background-color:oldlace">
 Pseudo {
-  Main = "{" (id | Block)+ "}"
-  Block =   "{" (id | Block)+ "}" -- rec
-          | id+           -- flat
-
+  Main = "{" id Commands Details "}"
+  Commands = "{" id Command+ "}"
+  Details = "{" id FunctionBlock+ "}"
+  FunctionBlock = "{" id line+ "}"
+  line = notEOL* newline
+  Command = id
   id = italicid | ident
   underscore = "_"
   newline = "\n"
   spc = " "
-  notEOL = ~newline any
+  notEOL = ~newline ~"}" any
   italicid = underscore ident underscore
   ident = firstChar followChar*
   firstChar = letter
@@ -104,11 +106,26 @@ Pseudo {
 
 <p>p2b semantics:</p>
 <textarea id="p2bsemantics" rows="10" cols="90" placeholder="semantics" style="background-color:oldlace;">
-Main [lb @choices rb] = [[${lb}${choices}${rb}]]
-Block_rec [lb @b rb] = [[${lb}${b}${rb}]]
-Block_flat [@ids] = [[${ids}]]
+Main [lb id commands details rb] = [[
+#!/bin/bash
+# ${id}\n
+clear
+set -e
+trap 'catch' ERR
 
-id [name] = [[${name}\n]]
+catch () {
+    echo '*** FATAL ERROR ***'
+    exit 1
+}
+
+${details}\n${commands}]]
+Commands [lb id @choices rb] = [[# ${id}\n${choices}]]
+Details [lb id @choices rb] = [[# ${id}\n${choices}]]
+FunctionBlock [lb id @bs rb] = [[${id} () {\n${bs}\n}\n]]
+line [@cs nl] = [[\t${cs}${nl}]]
+Command [str] = [[\t${str}\n]]
+
+id [name] = [[${name}]]
 underscore [c] = [[${c}]]
 newline [c] = [[${c}]]
 spc [c] = [[${c}]]
