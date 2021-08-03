@@ -9,30 +9,34 @@ A very, very simple transpiler from code-markdown to bash.
 
 Transpile
 ```
-# overview
-## a
-	e
-	g
+# _containment_
 
-## b
-### e f
-### g h
+## _fb pipeline_
+	allContains1
+	printAllDeepContains
+	printAllDirectContains
+
+
+
+## _details_
+### allContains1
+	load fb
+	load onSameDiagram
+	load contain1
+### printAllDeepContains
+	load fb
+	load onSameDiagram
+	load contains2
+### printAllDirectContains
+	load fb
+	load onSameDiagram
+	load contains3
 ```
 to
 ```
-... preamble stuff ...
-e () { f }
-g () { h }
-e
-g
-```
+#!/bin/bash
+# _containment_
 
-Note that the above input syntax is editable by emacs md-mode.
-
-Emacs md-mode provides the `TAB` key to allow eliding layers.
-
-## Preamble
-```
 clear
 set -e
 trap 'catch' ERR
@@ -41,9 +45,51 @@ catch () {
     echo '*** FATAL ERROR ***'
     exit 1
 }
+
+# _details_
+allContains1 () {
+	load fb
+	load onSameDiagram
+	load contain1
+
+}
+printAllDeepContains () {
+	load fb
+	load onSameDiagram
+	load contains2
+
+}
+printAllDirectContains () {
+	load fb
+	load onSameDiagram
+	load contains3
+
+}
+
+# _fb pipeline_
+	allContains1
+	printAllDeepContains
+	printAllDirectContains
 ```
 
-Errors `exit 1` in any sub-script will be caught by the above.
+Note that the above input syntax is editable by emacs md-mode.
+
+Emacs md-mode provides the `TAB` key to allow eliding layers.
+
+## Preamble
+The preamble traps errors and prints a FATAL
+```
+
+clear
+set -e
+trap 'catch' ERR
+
+catch () {
+    echo '*** FATAL ERROR ***'
+    exit 1
+}
+``
+Any sub-script that exits with a non-0 exit code, will be caught by the above.
 
 # See also
 [Code Markdown to Structured Pseudo-code](https://guitarvydas.github.io/2021/08/03/Code-Markdown-to-Structured-Pseudo-code.html)
