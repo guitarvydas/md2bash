@@ -89,7 +89,6 @@ Pseudo {
   Main = "{" id Commands Details "}"
   Commands = "{" id Block+ "}"
   Details = "{" id Block+ "}"
-  Level2 = "{" id Block+ "}"
   Block =   "{" id (id | Block)+ "}" -- rec
           | id+           -- flat
 
@@ -110,7 +109,6 @@ Pseudo {
 Main [lb id commands details rb] = [[# ${id}\n${commands}\n${details}]]
 Commands [lb id @choices rb] = [[# ${id}\n${choices}]]
 Details [lb id @choices rb] = [[# ${id}${choices}]]
-Level2 [lb id @choices rb] = [[${lb}${id}${choices}${rb}]]
 Block_rec [lb id @b rb] = [[${lb}${id}${b}${rb}]]
 Block_flat [@ids] = [[${ids}]]
 
