@@ -86,8 +86,11 @@ spc [c] = [[${c}]]
 <p>p2b grammar:</p>
 <textarea id="p2bgrammar" rows="10" cols="90" placeholder="code markdown grammar" style="background-color:oldlace">
 Pseudo {
-  Main = "{" (id | Block)+ "}"
-  Block =   "{" (id | Block)+ "}" -- rec
+  Main = "{" id Commands Details "}"
+  Commands = "{" id Block+ "}"
+  Details = "{" id Block+ "}"
+  Level2 = "{" id Block+ "}"
+  Block =   "{" id (id | Block)+ "}" -- rec
           | id+           -- flat
 
   id = italicid | ident
@@ -104,8 +107,11 @@ Pseudo {
 
 <p>p2b semantics:</p>
 <textarea id="p2bsemantics" rows="10" cols="90" placeholder="semantics" style="background-color:oldlace;">
-Main [lb @choices rb] = [[${lb}${choices}${rb}]]
-Block_rec [lb @b rb] = [[${lb}${b}${rb}]]
+Main [lb id commands details rb] = [[# ${id}\n${commands}\n${details}]]
+Commands [lb id @choices rb] = [[${lb}${id}${choices}${rb}]]
+Details [lb id @choices rb] = [[${lb}${id}${choices}${rb}]]
+Level2 [lb id @choices rb] = [[${lb}${id}${choices}${rb}]]
+Block_rec [lb id @b rb] = [[${lb}${id}${b}${rb}]]
 Block_flat [@ids] = [[${ids}]]
 
 id [name] = [[${name}\n]]
