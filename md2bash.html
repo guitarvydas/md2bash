@@ -49,25 +49,25 @@ spc [c] = [[${c}]]
 # _containment_
 
 ## _fb pipeline_
-	allContains1
-	printAllDeepContains
-	printAllDirectContains
+	script1
+	script2
+	script3
 
 
 
 ## _details_
-### allContains1
-	load fb
-	load onSameDiagram
-	load contain1
-### printAllDeepContains
-	load fb
-	load onSameDiagram
-	load contains2
-### printAllDirectContains
-	load fb
-	load onSameDiagram
-	load contains3
+### script1
+	echo hello
+	echo world 
+	echo from script 1
+### script2
+	echo hello
+	echo world 
+	echo from script 2
+### script3
+	echo hello
+	echo world 
+	echo from script 3
 </textarea>
 
 <p>transpiled:</p>
