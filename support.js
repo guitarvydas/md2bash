@@ -10,7 +10,7 @@ function emitbrackets (indentstring) {
     var prevdepth = scopeGet ('depth');
     scopeModify ('depth', depth);
     if (prevdepth === depth) {
-	return "}\n{";
+	return `}\n{`;
     } else if (depth > prevdepth) {
 	var openp = scopeGet ('openbrackets');
 	scopeModify ('openbrackets', openp + 1);

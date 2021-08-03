@@ -86,16 +86,15 @@ spc [c] = [[${c}]]
 <p>p2b grammar:</p>
 <textarea id="p2bgrammar" rows="10" cols="90" placeholder="code markdown grammar" style="background-color:oldlace">
 Pseudo {
-  Main = "{" id Block+ "}"
-  Block = "{" id Command+ "}"
-  Command = Block | LoadCommand | id
-  LoadCommand = "load" id
+  Main = "{" (id | Block)+ "}"
+  Block =   "{" (id | Block)+ "}" -- rec
+          | id+           -- flat
 
+  id = italicid | ident
   underscore = "_"
   newline = "\n"
   spc = " "
   notEOL = ~newline any
-  id = italicid | ident
   italicid = underscore ident underscore
   ident = firstChar followChar*
   firstChar = letter
@@ -105,20 +104,19 @@ Pseudo {
 
 <p>p2b semantics:</p>
 <textarea id="p2bsemantics" rows="10" cols="90" placeholder="semantics" style="background-color:oldlace;">
-Main [lb id @blocks rb] = [[${lb}${id}\n${blocks}${rb}]]
-Block [lb id @commands rb] = [[${lb}${id}\n${commands}${rb}\n]]
-Command [c] = [[${c}\n]]
-LoadCommand [k id] = [[${k} ${id}]]
+Main [lb @choices rb] = [[${lb}${choices}${rb}]]
+Block_rec [lb @b rb] = [[${lb}${b}${rb}]]
+Block_flat [@ids] = [[${ids}]]
 
+id [name] = [[${name}\n]]
+underscore [c] = [[${c}]]
+newline [c] = [[${c}]]
+spc [c] = [[${c}]]
 notEOL [c] = [[${c}]]
-id [name] = [[${name}]]
 italicid [u1 id u2] = [[${u1}${id}${u2}]]
 ident [f @cs] = [[${f}${cs}]] 
 firstChar [c] = [[${c}]]
 followChar [c] = [[${c}]]
-underscore [c] = [[${c}]]
-newline [c] = [[${c}]]
-spc [c] = [[${c}]]
 </textarea>
 
 <p>transpiled to bash:</p>
@@ -172,7 +170,7 @@ spc [c] = [[${c}]]
 
   function generate () {
       md2pseudo ();
-      //pseudo2bash ();
+      pseudo2bash ();
   }
   
   </script>
